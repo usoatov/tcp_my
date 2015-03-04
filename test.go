@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net"
 	"os"
+
+	"github.com/usoatov/tcp_my/parse"
 )
 
 func main() {
@@ -30,17 +32,23 @@ func main() {
 
 	println("write to server = ", by)
 
-	reply := make([]byte, 200)
+	reply := make([]byte, 150)
 
 	_, err = conn.Read(reply)
 	if err != nil {
 		println("Write to server failed:", err.Error())
 		os.Exit(1)
 	}
+	r := parse.Ignorenulls(reply)
 
 	println("reply from server=", string(reply))
 	for i := range reply {
 		fmt.Printf("%x ", reply[i])
+	}
+	fmt.Println("")
+
+	for i := range r {
+		fmt.Printf("%x ", r[i])
 	}
 
 	conn.Close()
