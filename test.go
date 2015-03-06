@@ -22,7 +22,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	by := []byte{0xfa, 0x01, 0x01, 0x04, 0x00, 0xa0, 0x78, 0x00, 0xfe, 0x22, 0xf5}
+	for i := 1; i < 4072; i++ {
+
+	}
+
+	by := []byte{0xfa, 0x01, 0x01, 0x04, 0x00, 0xa0, 0x78, 0x00, 0xc0, 0x1c, 0xf5}
 	//04/   00/   A0/   08/   00/   C0
 	_, err = conn.Write(by)
 	if err != nil {
@@ -50,6 +54,10 @@ func main() {
 	for i := range r {
 		fmt.Printf("%x ", r[i])
 	}
+
+	fmt.Println("")
+	bd := parse.Body(r)
+	fmt.Printf("%x ", bd)
 
 	conn.Close()
 }
