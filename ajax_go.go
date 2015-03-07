@@ -4,7 +4,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -29,10 +28,18 @@ var page = `<html>
            </head>
            <body>
              <h2 align=center>Go Timer </h2>
-             <div id="output" style="width: 30%; height: 63%; overflow-y: scroll; float:left;"></div>
+             <div id="output" style="width: 30%; height: 64%; overflow-y: scroll; float:left;"></div>
              <div id="v1" style="width: 50%; height: 30%; overflow-y: scroll; float:left;"></div>
              <div id="v2" style="width: 50%; height: 30%; overflow-y: scroll; float:left;"></div>
-             <input id="sett" type="submit" name="sett" value="Settings" onclick="changeUrl()">
+             <table width=100%>
+             <tr>
+             <td>
+             <p></p>
+             <input id="sett" type="submit" name="sett" value="Settings" onclick="changeUrl()">            
+             </td>
+             </tr>
+
+             </table>
 
              <script type="text/javascript">
 
@@ -65,34 +72,15 @@ var page = `<html>
                  });
                }
 
-               function delayedPost1() 
-               {
-                 $.post("http://localhost:9999/dev", "", function(data, status) 
-                 {                    
-                    $("#output").prepend(data);
-                 });
-
-                 $.post("http://localhost:9999/v1", "", function(data, status) 
-                 {                   
-                    $("#v1").prepend(data);
-                 });
-
-                 $.post("http://localhost:9999/v3", "", function(data, status) 
-                 {                    
-                    $("#v2").prepend(data);
-                 });
-               }
 
                function changeUrl()
                {
-                  alert('salom');                      
+                  //alert('salom');                      
                   clearInterval(myDelay);
 
-                  window.location.replace("http://beta.biotrack.uz");
+                  window.location.replace("http://localhost:9999/sett");
 
                }
-
-
 
 
 
@@ -107,28 +95,60 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 // handler to cater AJAX requests
 func handlerDevs(w http.ResponseWriter, r *http.Request) {
-	//fmt.Fprint(w, time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST"))
 	fmt.Fprint(w, "<font color=red>Dev1<br></font>")
 }
 
 func handlerV1(w http.ResponseWriter, r *http.Request) {
-	//fmt.Fprint(w, time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST"))
 	fmt.Fprint(w, "<font color=blue>Vertical1<br></font>")
 }
 
 func handlerV2(w http.ResponseWriter, r *http.Request) {
-	//fmt.Fprint(w, time.Now().Format("Mon, 02 Jan 2006 15:04:05 MST"))
 	fmt.Fprint(w, "<font color=green>Vertical2<br></font>")
 }
 
+func handlerSett(w http.ResponseWriter, r *http.Request) {
+	setpage := `
+  <html>
+
+  <head>
+  <title>Настройки</title>
+  <meta name="generator" content="Namo WebEditor v5.0">
+  </head>
+
+  <body bgcolor="white" text="black" link="blue" vlink="purple" alink="red">
+  <p>&nbsp;</p>
+  <div id="layer1" style="background-color:rgb(0,204,255); width:832px; height:398px; position:absolute; left:153px; top:25px; z-index:1; layer-background-color:rgb(0,204,255); ">
+    <p align="center"><font color="blue"><b>Настройки программы</b></font></p>
+    <br>
+      <form name="form1" action="/setting" method="Post">
+    URL сервера &nbsp;<input type="text" name="srv_url"> &nbsp;Логин &nbsp;<input type="text" name="login">
+    &nbsp;Пароль &nbsp;<input type="text" name="pass">
+          <p align="center"><input type="submit" name="Сохранить"></p>
+      </form>
+  </div>
+  </body>
+
+  </html>
+  `
+	fmt.Fprint(w, setpage)
+}
+
 func main() {
-	http.HandleFunc("/jquery.min.js", SendJqueryJs)
-	http.HandleFunc("/", handler)
-	http.HandleFunc("/dev", handlerDevs)
-	http.HandleFunc("/v1", handlerV1)
-	http.HandleFunc("/v2", handlerV2)
-	log.Fatal(http.ListenAndServe(":9999", nil))
-	//panic(http.ListenAndServe(":8081", nil))
+	mux := http.NewServeMux()
+	mux.HandleFunc("/jquery.min.js", SendJqueryJs)
+	mux.HandleFunc("/", handler)
+	mux.HandleFunc("/dev", handlerDevs)
+	mux.HandleFunc("/v1", handlerV1)
+	mux.HandleFunc("/v2", handlerV2)
+	mux.HandleFunc("/sett", handlerSett)
+	mux.HandleFunc("/setting", handlerSetting)
+	http.ListenAndServe(":9999", mux)
+}
+
+func handlerSetting(w http.ResponseWriter, r *http.Request) {
+	r.ParseForm()
+	name := r.PostFormValue("srv_url")
+	fmt.Fprint(w, name)
 }
 
 func SendJqueryJs(w http.ResponseWriter, r *http.Request) {
