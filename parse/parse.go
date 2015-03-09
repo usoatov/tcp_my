@@ -26,3 +26,13 @@ func Body(b []byte) []byte {
 	return c
 
 }
+
+func CRC(b2 []byte) byte {
+	fmt.Printf("CRCGA keldi %x ", b2)
+	var crc byte
+	for i := range b2 {
+		crc = crc ^ b2[i]
+	}
+	fmt.Printf("crc %X ", crc)
+	return crc
+}
