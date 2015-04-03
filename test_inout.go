@@ -29,7 +29,7 @@ func Send(s []byte) []byte {
 		os.Exit(1)
 	}
 
-	println("write to server = ", s)
+	fmt.Println("write to server = ", s)
 
 	reply := make([]byte, 150)
 
@@ -40,7 +40,7 @@ func Send(s []byte) []byte {
 		os.Exit(1)
 	}
 	conn.Close()
-	time.Sleep(900 * time.Millisecond)
+	time.Sleep(2500 * time.Millisecond)
 
 	return reply
 
@@ -55,7 +55,7 @@ func main() {
 		hi := byte(i >> 8)
 		lo := byte(i & 0xFF)
 		fmt.Printf("H %x L %x, ", hi, lo)
-		by = []byte{0xfa, 0x01, 0x01, 0x04, 0x00, 0xa0}
+		by = []byte{0xfa, 0x01, 0x01, 0x04, 0x02, 0xa0}
 		by = append(by, 0x78, hi, lo)
 
 		crc := parse.CRC(by[3:len(by)])
@@ -72,7 +72,7 @@ func main() {
 
 		r := parse.Ignorenulls(res)
 
-		println("reply from server=", string(r))
+		fmt.Println("reply from server=", string(r))
 
 		for i := range r {
 			fmt.Printf("%x ", r[i])
@@ -80,7 +80,11 @@ func main() {
 
 		fmt.Println("")
 		bd := parse.Body(r)
-		fmt.Printf("Body %x ", bd)
+		fmt.Print("Body ")
+		for i := range bd {
+			fmt.Printf("%x ", bd[i])
+		}
+		fmt.Println("------------------")
 
 	}
 
