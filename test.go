@@ -40,7 +40,7 @@ func Send(s []byte) []byte {
 		os.Exit(1)
 	}
 	conn.Close()
-	time.Sleep(900 * time.Millisecond)
+	time.Sleep(1100 * time.Millisecond)
 
 	return reply
 
@@ -81,6 +81,20 @@ func main() {
 		fmt.Println("")
 		bd := parse.Body(r)
 		fmt.Printf("Body %x ", bd)
+		fmt.Println("------------------")
+
+		for j := 0; j <= 14; j = j + 1 {
+			fmt.Print("key ")
+			fmt.Printf("%X ", bd[j*8])
+			fmt.Printf("%X ", bd[j*8+1])
+			fmt.Printf("%X ", bd[j*8+2])
+			fmt.Printf("%X ", bd[j*8+3])
+			fmt.Printf("%X ", bd[j*8+4])
+			fmt.Printf("%X ", bd[j*8+5])
+			fmt.Printf("%X ", bd[j*8+6])
+			fmt.Printf("%X ", bd[j*8+7])
+			fmt.Println("")
+		}
 
 	}
 

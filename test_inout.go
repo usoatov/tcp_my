@@ -14,18 +14,18 @@ func Send(s []byte) []byte {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", servAddr)
 
 	if err != nil {
-		println("ResolveTCPAddr failed:", err.Error())
+		fmt.Println("ResolveTCPAddr failed:", err.Error())
 		os.Exit(1)
 	}
 
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	if err != nil {
-		println("Dial failed:", err.Error())
+		fmt.Println("Dial failed:", err.Error())
 	}
 
 	_, err = conn.Write(s)
 	if err != nil {
-		println("Write to server failed:", err.Error())
+		fmt.Println("Write to server failed:", err.Error())
 		os.Exit(1)
 	}
 
@@ -36,7 +36,7 @@ func Send(s []byte) []byte {
 	_, err = conn.Read(reply)
 
 	if err != nil {
-		println("Write to server failed:", err.Error())
+		fmt.Println("Write to server failed:", err.Error())
 		os.Exit(1)
 	}
 	conn.Close()
